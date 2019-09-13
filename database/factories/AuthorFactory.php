@@ -8,6 +8,6 @@ use Faker\Generator as Faker;
 $factory->define(Author::class, function (Faker $faker) {
     return [
         'name' => $faker->firstName,
-        'age' => $faker->numberBetween(20, 100),
+        'birth_date' => $faker->date(),
     ];
 });
