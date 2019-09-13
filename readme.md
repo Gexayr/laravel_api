@@ -108,7 +108,7 @@
 ### Filter 
 (accepts date (1986-06-26) and type: (greater | equal | less) )
 
-    POST http://myapi.loc/api/book
+    POST http://myapi.loc/api/book/filter
 
     "header": {            
                     Content-Type : application/json,
