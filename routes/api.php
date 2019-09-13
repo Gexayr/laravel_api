@@ -18,3 +18,4 @@ use Illuminate\Http\Request;
 //});
 //Route::get('/book/{book}', 'BookController@show');
 Route::apiResource('/book', 'BookController');
+Route::post('/book/filter', 'BookController@filter');

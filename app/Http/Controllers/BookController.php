@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Author;
 use App\Book;
 use App\Http\Resources\BookResource;
 use App\Http\Resources\BookResourceCollection;
@@ -28,7 +29,9 @@ class BookController extends Controller
      */
     public function index(): BookResourceCollection
     {
+//        return Book::all();
         return new BookResourceCollection(Book::paginate());
+
     }
 
     /**
@@ -71,5 +74,51 @@ class BookController extends Controller
         return response()->json();
     }
 
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function filter(Request $request)
+    {
+//        filter
+        $request->validate([
+            'type'  => 'required|in:greater,equal,less',
+            'date'  => 'required|date'
+        ]);
+
+        $type = $request->post('type');
+        $date = $request->post('date');
+
+        $filtered_authors = [];
+        $filtered_books = [];
+        switch ($type) {
+            case "greater":
+                $authors = Author::where('birth_date', '<', $date)->get('id');
+                foreach ($authors as $author) {
+                    $filtered_authors[] = $author->toArray()['id'];
+                }
+        break;
+            case "equal":
+                $authors = Author::whereBirthDate($date)->get('id');
+                foreach ($authors as $author) {
+                    $filtered_authors[] = $author->toArray()['id'];
+                }
+        break;
+            default:
+                $authors = Author::where('birth_date', '>', $date)->get('id');
+                foreach ($authors as $author) {
+                    $filtered_authors[] = $author->toArray()['id'];
+                }
+        }
+
+        foreach ($filtered_authors as $id){
+            foreach (Book::whereAuthorId($id)->get() as $item){
+                $filtered_books[] = $item;
+            }
+        }
+
+        return $filtered_books;
+    }
 
 }
